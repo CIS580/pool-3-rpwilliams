@@ -246,6 +246,27 @@ function update(elapsedTime) {
   });
 
   // TODO: Process ball collisions
+  collisions.forEach(function(pair) {
+    var collisionNormal = {
+      x: pair.a.x - pair.b.x;
+      y: pair.a.y - pair.b.y
+    }
+    var angle = Math.atan2(collisionNormal.y, collisionNormal.x);
+    var a = Vector.rotate(pair.a, angle);
+    var b = Vector.rotate(pair.b, angle);
+
+    // Solve the collision along the x axis
+    var s = a.x
+    a.x = b.x;
+    b.x = s;
+    // Rotate the problem space back to world space
+    a = Vector.rotate(a, -angle);
+    b = Vector.rotate(b, -angle);
+    pair.a.velocity.x = a.x;
+    pair.a.velocity.y = a.y;
+    pair.b.velocity.x = b.x;
+    pair.b.velocity.y = b.y;
+  });
 }
 
 /**
